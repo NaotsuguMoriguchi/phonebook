@@ -1,13 +1,12 @@
 import React from 'react';
-import
-  {
-    ScrollView,
-    StyleSheet,
-    TouchableOpacity,
-    Image,
-    ImageBackground,
-    Dimensions
-  } from 'react-native';
+import {
+  ScrollView,
+  StyleSheet,
+  TouchableOpacity,
+  Image,
+  ImageBackground,
+  Dimensions
+} from 'react-native';
 import { Button, Block, Text, Input, theme } from 'galio-framework';
 
 import { materialTheme, products, Images } from '../constants/';
@@ -17,17 +16,15 @@ const { width } = Dimensions.get('screen');
 
 const thumbMeasure = (width - 48 - 32) / 3;
 
-export default class Components extends React.Component
-{
+export default class Components extends React.Component {
   state = {
     'switch-1': true,
     'switch-2': false,
   };
 
   toggleSwitch = switchId => this.setState({ [switchId]: !this.state[switchId] });
-
-  renderButtons = () =>
-  {
+  
+  renderButtons = () => {
     return (
       <Block flex>
         <Text bold size={16} style={styles.title}>Buttons</Text>
@@ -63,7 +60,7 @@ export default class Components extends React.Component
             </Button>
           </Block>
           <Block row space="evenly">
-            <Block flex left style={{ marginTop: 8 }}>
+            <Block flex left style={{marginTop: 8}}>
               <Select
                 defaultIndex={1}
                 options={[1, 2, 3, 4, 5]}
@@ -95,27 +92,25 @@ export default class Components extends React.Component
       </Block>
     )
   }
-
-  renderText = () =>
-  {
+  
+  renderText = () => {
     return (
       <Block flex style={styles.group}>
         <Text bold size={16} style={styles.title}>Typography</Text>
         <Block style={{ paddingHorizontal: theme.SIZES.BASE }}>
-          <Text h1 style={{ marginBottom: theme.SIZES.BASE / 2 }}>Heading 1</Text>
-          <Text h2 style={{ marginBottom: theme.SIZES.BASE / 2 }}>Heading 2</Text>
-          <Text h3 style={{ marginBottom: theme.SIZES.BASE / 2 }}>Heading 3</Text>
-          <Text h4 style={{ marginBottom: theme.SIZES.BASE / 2 }}>Heading 4</Text>
-          <Text h5 style={{ marginBottom: theme.SIZES.BASE / 2 }}>Heading 5</Text>
-          <Text p style={{ marginBottom: theme.SIZES.BASE / 2 }}>Paragraph</Text>
+          <Text h1 style={{marginBottom: theme.SIZES.BASE / 2}}>Heading 1</Text>
+          <Text h2 style={{marginBottom: theme.SIZES.BASE / 2}}>Heading 2</Text>
+          <Text h3 style={{marginBottom: theme.SIZES.BASE / 2}}>Heading 3</Text>
+          <Text h4 style={{marginBottom: theme.SIZES.BASE / 2}}>Heading 4</Text>
+          <Text h5 style={{marginBottom: theme.SIZES.BASE / 2}}>Heading 5</Text>
+          <Text p style={{marginBottom: theme.SIZES.BASE / 2}}>Paragraph</Text>
           <Text muted>This is a muted paragraph.</Text>
         </Block>
       </Block>
     )
   }
-
-  renderInputs = () =>
-  {
+  
+  renderInputs = () => {
     return (
       <Block flex style={styles.group}>
         <Text bold size={16} style={styles.title}>Inputs</Text>
@@ -131,9 +126,8 @@ export default class Components extends React.Component
       </Block>
     )
   }
-
-  renderSwitches = () =>
-  {
+  
+  renderSwitches = () => {
     return (
       <Block flex style={styles.group}>
         <Text bold size={16} style={styles.title}>Switches</Text>
@@ -156,9 +150,8 @@ export default class Components extends React.Component
       </Block>
     )
   }
-
-  renderTableCell = () =>
-  {
+  
+  renderTableCell = () => {
     const { navigation } = this.props;
     return (
       <Block flex style={styles.group}>
@@ -176,9 +169,8 @@ export default class Components extends React.Component
       </Block>
     )
   }
-
-  renderNavigation = () =>
-  {
+  
+  renderNavigation = () => {
     return (
       <Block flex style={styles.group}>
         <Text bold size={16} style={styles.title}>Navigation</Text>
@@ -204,9 +196,8 @@ export default class Components extends React.Component
       </Block>
     )
   }
-
-  renderSocial = () =>
-  {
+  
+  renderSocial = () => {
     return (
       <Block flex style={styles.group}>
         <Text bold size={16} style={styles.title}>Social</Text>
@@ -256,9 +247,8 @@ export default class Components extends React.Component
       </Block>
     )
   }
-
-  renderCards = () =>
-  {
+  
+  renderCards = () => {
     return (
       <Block flex style={styles.group}>
         <Text bold size={16} style={styles.title}>Cards</Text>
@@ -286,9 +276,8 @@ export default class Components extends React.Component
       </Block>
     )
   }
-
-  renderAlbum = () =>
-  {
+  
+  renderAlbum = () => {
     const { navigation } = this.props;
 
     return (
@@ -299,7 +288,7 @@ export default class Components extends React.Component
             <Text
               size={12}
               color={theme.COLORS.PRIMARY}
-              onPress={() => navigation.navigate('プロフィール編集')}>
+              onPress={() => navigation.navigate('Home')}>
               View All
             </Text>
           </Block>
@@ -319,22 +308,21 @@ export default class Components extends React.Component
     )
   }
 
-  render()
-  {
+  render() {
     return (
       <Block flex center>
         <ScrollView
           style={styles.components}
           showsVerticalScrollIndicator={false}>
-          {this.renderButtons()}
-          {this.renderText()}
-          {this.renderInputs()}
-          {this.renderSwitches()}
-          {this.renderTableCell()}
-          {this.renderNavigation()}
-          {this.renderSocial()}
-          {this.renderCards()}
-          {this.renderAlbum()}
+            {this.renderButtons()}
+            {this.renderText()}
+            {this.renderInputs()}
+            {this.renderSwitches()}
+            {this.renderTableCell()}
+            {this.renderNavigation()}
+            {this.renderSocial()}
+            {this.renderCards()}
+            {this.renderAlbum()}
         </ScrollView>
       </Block>
     );

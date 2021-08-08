@@ -14,15 +14,12 @@ const proScreens = [
   "Sign Up"
 ];
 
-class DrawerItem extends React.Component
-{
-  renderIcon = () =>
-  {
+class DrawerItem extends React.Component {
+  renderIcon = () => {
     const { title, focused } = this.props;
 
-    switch (title)
-    {
-      case "プロフィール編集":
+    switch (title) {
+      case "Home":
         return (
           <Icon
             size={16}
@@ -117,14 +114,27 @@ class DrawerItem extends React.Component
     }
   };
 
+  renderLabel = () => {
+    const { title } = this.props;
 
+    if (proScreens.includes(title)) {
+      return (
+        <Block middle style={styles.pro}>
+          <Text size={12} color="white">
+            PRO
+          </Text>
+        </Block>
+      );
+    }
 
-  render()
-  {
+    return null;
+  };
+
+  render() {
     const { focused, title, navigation } = this.props;
     const proScreen = proScreens.includes(title);
     return (
-      <TouchableOpacity style={{ height: 55 }} onPress={() => { navigation.navigate(title) }}>
+      <TouchableOpacity style={{ height: 55 }} onPress={() => {navigation.navigate(title)}}>
         <Block
           flex
           row
@@ -143,12 +153,13 @@ class DrawerItem extends React.Component
                 focused
                   ? "white"
                   : proScreen
-                    ? materialTheme.COLORS.MUTED
-                    : "black"
+                  ? materialTheme.COLORS.MUTED
+                  : "black"
               }
             >
               {title}
             </Text>
+            {this.renderLabel()}
           </Block>
         </Block>
       </TouchableOpacity>
@@ -160,7 +171,6 @@ export default DrawerItem;
 
 const styles = StyleSheet.create({
   defaultStyle: {
-    marginTop: 10,
     paddingVertical: 16,
     paddingHorizontal: 16
   },

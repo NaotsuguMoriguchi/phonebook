@@ -31,36 +31,29 @@ const assetImages = [
   Images.Pro,
   Images.Profile,
   Images.Avatar,
-  // Images.Onboarding,
+  Images.Onboarding,
 ];
 
 // cache product images
 products.map(product => assetImages.push(product.image));
 
-function cacheImages(images)
-{
-  return images.map(image =>
-  {
-    if (typeof image === 'string')
-    {
+function cacheImages(images) {
+  return images.map(image => {
+    if (typeof image === 'string') {
       return Image.prefetch(image);
-    } else
-    {
+    } else {
       return Asset.fromModule(image).downloadAsync();
     }
   });
 }
 
-export default class App extends React.Component
-{
+export default class App extends React.Component {
   state = {
     isLoadingComplete: false,
   };
 
-  render()
-  {
-    if (!this.state.isLoadingComplete && !this.props.skipLoadingScreen)
-    {
+  render() {
+    if (!this.state.isLoadingComplete && !this.props.skipLoadingScreen) {
       return (
         <AppLoading
           startAsync={this._loadResourcesAsync}
@@ -68,14 +61,12 @@ export default class App extends React.Component
           onFinish={this._handleFinishLoading}
         />
       );
-    } else
-    {
+    } else {
       return (
         <NavigationContainer>
           <GalioProvider theme={materialTheme}>
             <Block flex>
               {Platform.OS === 'ios' && <StatusBar barStyle="default" />}
-              {/* {Platform.OS === 'android' && <StatusBar barStyle="dark-content" backgroundColor="white" />} */}
               <Screens />
             </Block>
           </GalioProvider>
@@ -84,22 +75,19 @@ export default class App extends React.Component
     }
   }
 
-  _loadResourcesAsync = async () =>
-  {
+  _loadResourcesAsync = async () => {
     return Promise.all([
       ...cacheImages(assetImages),
     ]);
   };
 
-  _handleLoadingError = error =>
-  {
+  _handleLoadingError = error => {
     // In this case, you might want to report the error to your error
     // reporting service, for example Sentry
     console.warn(error);
   };
 
-  _handleFinishLoading = () =>
-  {
+  _handleFinishLoading = () => {
     this.setState({ isLoadingComplete: true });
   };
 }

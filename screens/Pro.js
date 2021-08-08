@@ -7,23 +7,21 @@ const { height, width } = Dimensions.get('screen');
 import { Images, materialTheme } from '../constants/';
 import { HeaderHeight } from "../constants/utils";
 
-export default class Pro extends React.Component
-{
-  render()
-  {
+export default class Pro extends React.Component {
+  render() {
     const { navigation } = this.props;
 
     return (
       <Block flex style={styles.container}>
-        {/* <StatusBar barStyle="light-content" /> */}
+        <StatusBar barStyle="light-content" />
         <Block flex>
           <ImageBackground
             source={{ uri: Images.Pro }}
             style={{ height: height / 1.8, width, zIndex: 1 }}
           >
-            <LinearGradient
-              style={styles.gradient}
-              colors={['rgba(0,0,0,0)', 'rgba(0,0,0,1)']} />
+          <LinearGradient
+            style={styles.gradient}
+            colors={['rgba(0,0,0,0)', 'rgba(0,0,0,1)']} />
           </ImageBackground>
           <Block space="between" style={styles.padded}>
             <Block>
@@ -56,7 +54,7 @@ export default class Pro extends React.Component
                 shadowless
                 style={styles.button}
                 color={materialTheme.COLORS.BUTTON_COLOR}
-                onPress={() => navigation.navigate('プロフィール編集')}>
+                onPress={() => navigation.navigate('Home')}>
                 GET PRO VERSION
               </Button>
             </Block>

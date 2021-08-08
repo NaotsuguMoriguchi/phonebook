@@ -5,12 +5,11 @@ import { createDrawerNavigator } from "@react-navigation/drawer";
 
 import { Block, Text, theme } from "galio-framework";
 
-import ComponentsScreen from '../screens/Components';
-import EditProfileScreen from '../screens/EditProfile';
+
+import HomeScreen from '../screens/Home';
 import OnboardingScreen from '../screens/Onboarding';
-import ProfileScreen from '../screens/Profile';
 import ProScreen from '../screens/Pro';
-import SettingsScreen from '../screens/Settings';
+import BottomNavigationBar from '../components/BottomNavigationBar';
 
 import CustomDrawerContent from './Menu';
 import { Icon, Header } from '../components';
@@ -29,81 +28,19 @@ const profile = {
   rating: 4.8
 };
 
-function ProfileStack(props)
-{
-  return (
-    <Stack.Navigator initialRouteName="Profile" mode="card" headerMode="screen">
-      <Stack.Screen
-        name="Profile"
-        component={ProfileScreen}
-        options={{
-          header: ({ navigation, scene }) => (
-            <Header
-              white
-              transparent
-              title="Profile"
-              scene={scene}
-              navigation={navigation}
-            />
-          ),
-          headerTransparent: true
-        }}
-      />
-    </Stack.Navigator>
-  );
-}
-
-function SettingsStack(props)
-{
-  return (
-    <Stack.Navigator
-      initialRouteName="Settings"
-      mode="card"
-      headerMode="screen"
-    >
-      <Stack.Screen
-        name="Settings"
-        component={SettingsScreen}
-        options={{
-          header: ({ navigation, scene }) => (
-            <Header title="Settings" scene={scene} navigation={navigation} />
-          )
-        }}
-      />
-    </Stack.Navigator>
-  );
-}
-
-function ComponentsStack(props)
-{
-  return (
-    <Stack.Navigator mode="card" headerMode="screen">
-      <Stack.Screen
-        name="Components"
-        component={ComponentsScreen}
-        options={{
-          header: ({ navigation, scene }) => (
-            <Header title="Components" scene={scene} navigation={navigation} />
-          )
-        }}
-      />
-    </Stack.Navigator>
-  );
-}
-
 function HomeStack(props)
 {
   return (
     <Stack.Navigator mode="card" headerMode="screen">
       <Stack.Screen
-        name="ProfileEdit"
-        component={EditProfileScreen}
+        name="Home"
+        component={HomeScreen}
         options={{
           header: ({ navigation, scene }) => (
             <Header
               search
               tabs
-              title="プロフィール編集"
+              title="Home"
               navigation={navigation}
               scene={scene}
             />
@@ -145,11 +82,11 @@ function AppStack(props)
           fontWeight: "normal"
         }
       }}
-      initialRouteName="プロフィール編集"
+      initialRouteName="Home"
     >
       <Drawer.Screen
-        name="プロフィール編集"
-        component={HomeStack}
+        name="Home"
+        component={BottomNavigationBar}
         options={{
           drawerIcon: ({ focused }) => (
             <Icon
@@ -157,107 +94,6 @@ function AppStack(props)
               name="shop"
               family="GalioExtra"
               color={focused ? "white" : materialTheme.COLORS.MUTED}
-            />
-          )
-        }}
-      />
-      <Drawer.Screen
-        name="Woman"
-        component={ProScreen}
-        options={{
-          drawerIcon: ({ focused }) => (
-            <Icon
-              size={16}
-              name="md-woman"
-              family="ionicon"
-              color={focused ? "white" : materialTheme.COLORS.MUTED}
-              style={{ marginLeft: 4, marginRight: 4 }}
-            />
-          )
-        }}
-      />
-      <Drawer.Screen
-        name="Man"
-        component={ProScreen}
-        options={{
-          drawerIcon: ({ focused }) => (
-            <Icon
-              size={16}
-              name="man"
-              family="entypo"
-              color={focused ? "white" : materialTheme.COLORS.MUTED}
-            />
-          )
-        }}
-      />
-      <Drawer.Screen
-        name="Kids"
-        component={ProScreen}
-        options={{
-          drawerIcon: ({ focused }) => (
-            <Icon
-              size={16}
-              name="baby"
-              family="GalioExtra"
-              color={focused ? "white" : materialTheme.COLORS.MUTED}
-            />
-          )
-        }}
-      />
-      <Drawer.Screen
-        name="New Collection"
-        component={ProScreen}
-        options={{
-          drawerIcon: ({ focused }) => (
-            <Icon
-              size={16}
-              name="grid-on"
-              family="material"
-              color={focused ? "white" : materialTheme.COLORS.MUTED}
-            />
-          )
-        }}
-      />
-      <Drawer.Screen
-        name="Profile"
-        component={ProfileStack}
-        options={{
-          drawerIcon: ({ focused }) => (
-            <Icon
-              size={16}
-              name="circle-10"
-              family="GalioExtra"
-              color={focused ? "white" : materialTheme.COLORS.MUTED}
-            />
-          )
-        }}
-      />
-      <Drawer.Screen
-        name="Settings"
-        component={SettingsStack}
-        options={{
-          drawerIcon: ({ focused }) => (
-            <Icon
-              size={16}
-              name="gears"
-              family="font-awesome"
-              color={focused ? "white" : materialTheme.COLORS.MUTED}
-              style={{ marginRight: -3 }}
-            />
-          )
-        }}
-      />
-      <Drawer.Screen
-        name="Components"
-        component={ComponentsStack}
-        options={{
-          drawerIcon: ({ focused }) => (
-            <Icon
-              size={16}
-              name="md-switch"
-              family="ionicon"
-              color={focused ? "white" : materialTheme.COLORS.MUTED}
-              style={{ marginRight: 2, marginLeft: 2 }}
             />
           )
         }}
@@ -351,7 +187,7 @@ const ComponentsStack = createStackNavigator({
 
 const HomeStack = createStackNavigator({
   Home: {
-    screen: EditProfileScreen,
+    screen: HomeScreen,
     navigationOptions: ({navigation}) => ({
       header: <Header search tabs title="Home" navigation={navigation} />,
     })

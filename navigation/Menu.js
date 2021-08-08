@@ -10,6 +10,7 @@ import { Images, materialTheme } from "../constants/";
 function CustomDrawerContent({
   drawerPosition,
   navigation,
+  profile,
   focused,
   state,
   ...rest
@@ -17,14 +18,7 @@ function CustomDrawerContent({
 {
   const insets = useSafeArea();
   const screens = [
-    "プロフィール編集",
-    // "Woman",
-    // "Man",
-    // "Kids",
-    // "New Collection",
-    // "Profile",
-    // "Settings",
-    // "Components"
+    "Home",
   ];
   return (
     <Block

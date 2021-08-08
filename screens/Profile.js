@@ -10,15 +10,13 @@ import { HeaderHeight } from "../constants/utils";
 const { width, height } = Dimensions.get('screen');
 const thumbMeasure = (width - 48 - 32) / 3;
 
-export default class Profile extends React.Component
-{
-  render()
-  {
+export default class Profile extends React.Component {
+  render() {
     return (
       <Block flex style={styles.profile}>
         <Block flex>
           <ImageBackground
-            source={{ uri: Images.Profile }}
+            source={{uri: Images.Profile}}
             style={styles.profileContainer}
             imageStyle={styles.profileImage}>
             <Block flex style={styles.profileDetails}>
@@ -38,7 +36,7 @@ export default class Profile extends React.Component
                     <Text color={theme.COLORS.MUTED} size={16}>
                       <Icon name="map-marker" family="font-awesome" color={theme.COLORS.MUTED} size={16} />
                       {` `} Los Angeles, CA
-                    </Text>
+                      </Text>
                   </Block>
                 </Block>
               </Block>
@@ -50,28 +48,28 @@ export default class Profile extends React.Component
           <ScrollView showsVerticalScrollIndicator={false}>
             <Block row space="between" style={{ padding: theme.SIZES.BASE, }}>
               <Block middle>
-                <Text bold size={12} style={{ marginBottom: 8 }}>36</Text>
+                <Text bold size={12} style={{marginBottom: 8}}>36</Text>
                 <Text muted size={12}>Orders</Text>
               </Block>
               <Block middle>
-                <Text bold size={12} style={{ marginBottom: 8 }}>5</Text>
+                <Text bold size={12} style={{marginBottom: 8}}>5</Text>
                 <Text muted size={12}>Bids & Offers</Text>
               </Block>
               <Block middle>
-                <Text bold size={12} style={{ marginBottom: 8 }}>2</Text>
+                <Text bold size={12} style={{marginBottom: 8}}>2</Text>
                 <Text muted size={12}>Messages</Text>
               </Block>
             </Block>
             <Block row space="between" style={{ paddingVertical: 16, alignItems: 'baseline' }}>
               <Text size={16}>Recently viewed</Text>
-              <Text size={12} color={theme.COLORS.PRIMARY} onPress={() => this.props.navigation.navigate('プロフィール編集')}>View All</Text>
+              <Text size={12} color={theme.COLORS.PRIMARY} onPress={() => this.props.navigation.navigate('Home')}>View All</Text>
             </Block>
             <Block style={{ paddingBottom: -HeaderHeight * 2 }}>
               <Block row space="between" style={{ flexWrap: 'wrap' }} >
                 {Images.Viewed.map((img, imgIndex) => (
                   <Image
                     source={{ uri: img }}
-                    key={`viewed-${img}`}
+                    key={`viewed-${img}`}  
                     resizeMode="cover"
                     style={styles.thumb}
                   />
