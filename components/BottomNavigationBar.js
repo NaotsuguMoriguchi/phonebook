@@ -4,12 +4,12 @@ import materialTheme from '../constants/Theme';
 import CallLogScreen from '../screens/Calllogs';
 import ContactScreen from '../screens/Contact';
 
-const callLogRoute = () => <CallLogScreen></CallLogScreen>;
 
-const contactRoute = () => <ContactScreen></ContactScreen>;
-
-const BottomNavigationBar = () =>
+const BottomNavigationBar = ({ navigation }) =>
 {
+  const callLogRoute = () => <CallLogScreen navigation={navigation}></CallLogScreen>;
+
+  const contactRoute = () => <ContactScreen navigation={navigation}></ContactScreen>;
   const [index, setIndex] = React.useState(0);
   const [routes] = React.useState([
     { key: 'callLog', title: 'Call Logs', icon: 'clock', color: materialTheme.COLORS.INFO },

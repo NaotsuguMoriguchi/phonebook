@@ -2,18 +2,22 @@ import React from 'react';
 import { withNavigation } from '@react-navigation/compat';
 import { TouchableOpacity, StyleSheet, StatusBar, Platform, Dimensions } from 'react-native';
 import { Button, Block, NavBar, Input, Text, theme } from 'galio-framework';
+import { EvilIcons } from '@expo/vector-icons';
+
 
 import Icon from './Icon';
 import materialTheme from '../constants/Theme';
 
+
 const { height, width } = Dimensions.get('window');
 const iPhoneX = () => Platform.OS === 'ios' && (height === 812 || width === 812 || height === 896 || width === 896);
 
-const Header = ({ navigation, title, white, transparent, back }) =>
+const Header = ({ navigation, title, white, transparent, back, move }) =>
 {
   const handleLeftPress = () =>
   {
-    return (back ? navigation.goBack() : navigation.openDrawer());
+    // return (back ? navigation.goBack() : navigation.openDrawer());
+    navigation.navigate(move)
   }
 
   // const { back, title, white, transparent, navigation } = this.props;
@@ -40,6 +44,18 @@ const Header = ({ navigation, title, white, transparent, back }) =>
         ]}
         onLeftPress={handleLeftPress}
       />
+      {/* {
+        navigation.state.name === 'App' ? (
+          <EvilIcons
+            name="search"
+            size={24}
+            color="black"
+            style={styles.search}
+            onPress={() => navigation.navigate('Contact')}
+          />
+        ) : null
+      } */}
+
     </Block>
   );
 }
@@ -58,6 +74,7 @@ const styles = StyleSheet.create({
     paddingBottom: 0,
     paddingTop: iPhoneX ? theme.SIZES.BASE : theme.SIZES.BASE,
     zIndex: 5,
+    position: 'relative'
   },
   shadow: {
     backgroundColor: theme.COLORS.WHITE,
@@ -67,4 +84,10 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.2,
     elevation: 3,
   },
+  search: {
+    position: 'absolute',
+    right: theme.SIZES.BASE,
+    bottom: theme.SIZES.BASE,
+    zIndex: 10
+  }
 })

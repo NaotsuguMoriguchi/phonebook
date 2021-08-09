@@ -5,11 +5,14 @@ import { Button, Text, theme } from 'galio-framework';
 
 import materialTheme from '../constants/Theme';
 
-export default class GaButton extends React.Component {
-  render() {
-    const { gradient, children, style, ...props } = this.props;
+export default class GaButton extends React.Component
+{
+  render()
+  {
+    const { gradient, children, style, textColor, ...props } = this.props;
 
-    if (gradient) {
+    if (gradient)
+    {
       return (
         <LinearGradient
           start={{ x: 0, y: 0 }}
@@ -19,7 +22,7 @@ export default class GaButton extends React.Component {
           colors={[materialTheme.COLORS.GRADIENT_START, materialTheme.COLORS.GRADIENT_END]}
         >
           <Button color="transparent" style={[styles.gradient, style]} {...props}>
-            <Text color={theme.COLORS.WHITE}>{children}</Text>
+            <Text color={textColor}>{children}</Text>
           </Button>
         </LinearGradient>
       );

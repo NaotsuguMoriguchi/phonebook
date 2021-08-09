@@ -10,6 +10,8 @@ import HomeScreen from '../screens/Home';
 import OnboardingScreen from '../screens/Onboarding';
 import ProScreen from '../screens/Pro';
 import BottomNavigationBar from '../components/BottomNavigationBar';
+import EditInfo from '../screens/EditInfo';
+import EditComment from '../screens/EditComment';
 
 import CustomDrawerContent from './Menu';
 import { Icon, Header } from '../components';
@@ -49,6 +51,29 @@ function HomeStack(props)
       />
     </Stack.Navigator>
   );
+}
+
+function EditInfoStack(props)
+{
+  return (
+    <Stack.Navigator mode="card" headerMode="screen">
+      <Stack.Screen
+        name="EditInformation"
+        component={EditInfo}
+        options={{
+          header: ({ navigation, scene }) => (
+            <Header
+              search
+              tabs
+              title="EditInfo"
+              navigation={navigation}
+              scene={scene}
+            />
+          )
+        }}
+      />
+    </Stack.Navigator>
+  )
 }
 
 function AppStack(props)
@@ -141,7 +166,9 @@ export default function OnboardingStack(props)
           headerTransparent: true
         }}
       />
-      <Stack.Screen name="App" component={AppStack} />
+      <Stack.Screen name="App" component={BottomNavigationBar} />
+      <Stack.Screen name="EditInfo" component={EditInfo} />
+      <Stack.Screen name="EditComment" component={EditComment} />
     </Stack.Navigator>
   );
 }

@@ -1,7 +1,7 @@
 export default {
   COLORS: {
     DEFAULT: '#DCDCDC',
-    PRIMARY: '#9C26B0',
+    PRIMARY: 'rgba(0, 117, 255, 1)',
     LABEL: '#FE2472',
     INFO: '#00BCD4',
     ERROR: '#F44336',
@@ -17,7 +17,7 @@ export default {
     GRADIENT_START: '#6B24AA',
     GRADIENT_END: '#AC2688',
     PRICE_COLOR: '#EAD5FB',
-    BORDER_COLOR: '#E7E7E7',
+    BORDER_COLOR: '#d4d4d4',
     BLOCK: '#E7E7E7',
     ICON: '#4A4A4A',
   },
