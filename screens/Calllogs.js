@@ -1,7 +1,8 @@
-import React from 'react';
-import { StyleSheet, Dimensions, ScrollView, View, ImageBackground } from 'react-native';
+import React, { useEffect } from 'react';
+import { StyleSheet, Dimensions, ScrollView, View, ImageBackground, PermissionsAndroid } from 'react-native';
 import { Button, Block, Text, Input, theme } from 'galio-framework';
 import { Entypo } from '@expo/vector-icons';
+import CallLogs from 'react-native-call-log';
 
 import { Header } from '../components';
 
@@ -12,6 +13,47 @@ const { width, height } = Dimensions.get('screen');
 
 export default function CallLogScreen({ navigation })
 {
+  const instructions = Platform.select({
+    ios: 'Press Cmd+R to reload,\n' + 'Cmd+D or shake for dev menu',
+    android:
+      'Double tap R on your keyboard to reload,\n' +
+      'Shake or press menu button for dev menu',
+  });
+  //Android
+  useEffect(() =>
+  {
+    (async () =>
+    {
+      try
+      {
+        const granted = await PermissionsAndroid.request(
+          PermissionsAndroid.PERMISSIONS.READ_CALL_LOG,
+          {
+            title: 'Call Log Example',
+            message:
+              'Access your call logs',
+            buttonNeutral: 'Ask Me Later',
+            buttonNegative: 'Cancel',
+            buttonPositive: 'OK',
+          }
+        )
+        if (granted === PermissionsAndroid.RESULTS.GRANTED)
+        {
+
+          // CallLogs.load(-1, filter).then(c => console.log(c, '00000000'));
+          CallLogs.loadAll().then(c => console.log(c, '00000000'));
+        } else
+        {
+          console.log('Call Log permission denied');
+        }
+      }
+      catch (e)
+      {
+        console.log(e);
+      }
+    })()
+  }, []);
+
   return (
     <>
       <Header title={'プロフィール編集'} move={'App'}></Header>
@@ -35,6 +77,8 @@ export default function CallLogScreen({ navigation })
                 onPress={() => navigation.navigate('EditInfo')}
               />
             </View>
+            <Text>{instructions}</Text>
+
           </View>
         </Block>
       </ScrollView>

@@ -23,8 +23,9 @@ const BottomNavigationBar = ({ navigation }) =>
 
   return (
     <BottomNavigation
-      navigationState={{ index, routes, }}
+      navigationState={{ index, routes }}
       onIndexChange={setIndex}
+      barStyle={{ backgroundColor: materialTheme.COLORS.PRIMARY }}
       renderScene={renderScene}
     />
   );

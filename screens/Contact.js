@@ -23,6 +23,7 @@ export default function ContactScreen()
           style={styles.input}
         ></Input>
       </Block>
+
     </>
   );
 }

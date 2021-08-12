@@ -1,5 +1,5 @@
 {
-  "name": "rn-material-kit-free",
+  "name": "phonebook",
   "version": "1.7.0",
   "description": "Material Kit React Native. Coded by Creative Tim",
   "main": "node_modules/expo/AppEntry.js",
@@ -28,6 +28,7 @@
     "galio-framework": "~0.7.1",
     "react": "16.13.1",
     "react-native": "https://github.com/expo/react-native/archive/sdk-39.0.3.tar.gz",
+    "react-native-call-log": "^2.1.2",
     "react-native-gesture-handler": "~1.7.0",
     "react-native-modal-dropdown": "git+https://github.com/siemiatj/react-native-modal-dropdown.git",
     "react-native-paper": "^4.9.2",
