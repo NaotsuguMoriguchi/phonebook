@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { StyleSheet, Dimensions, ScrollView, View, ImageBackground, PermissionsAndroid, Platform } from 'react-native';
-import { Button, Block, Text, Input, theme } from 'galio-framework';
+import { Button, Block, Text, theme } from 'galio-framework';
 import Icon from 'react-native-vector-icons/Entypo';
 import CallLogs from 'react-native-call-log';
 import CallDetectorManager from 'react-native-call-detection'
