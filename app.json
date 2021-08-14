@@ -1,34 +1,4 @@
 {
-  "expo": {
-    "name": "phonebook",
-    "description": "React Native - Material Kit Free",
-    "slug": "phonebook",
-    "privacy": "unlisted",
-    "sdkVersion": "39.0.0",
-    "platforms": [
-      "ios",
-      "android"
-    ],
-    "version": "1.7.0",
-    "orientation": "portrait",
-    "icon": "./assets/images/contact.png",
-    "splash": {
-      "image": "./assets/images/splash.png",
-      "resizeMode": "cover",
-      "backgroundColor": "#6C24AA"
-    },
-    "updates": {
-      "fallbackToCacheTimeout": 0
-    },
-    "assetBundlePatterns": [
-      "**/*"
-    ],
-    "ios": {
-      "supportsTablet": true
-    },
-    "android": {
-      "package": "io.expo.phonebook",
-      "versionCode":1
-    }
-  }
+  "name": "ReactNativeStarter",
+  "displayName": "ReactNativeStarter"
 }
