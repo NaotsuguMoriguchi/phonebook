@@ -1,13 +1,13 @@
-import React from 'react';
-import { StyleSheet, Dimensions, ScrollView } from 'react-native';
-import { Button, Block, Text, Input, theme } from 'galio-framework';
+import React from 'react'
+import { StyleSheet, Dimensions, ScrollView } from 'react-native'
+import { Button, Block, Text, Input, theme } from 'galio-framework'
 
-import Header from '../components/Header';
-import materialTheme from '../../constants/Theme';
+import Header from '../components/Header'
+import materialTheme from '../../constants/Theme'
 
 
 
-const { width } = Dimensions.get('screen');
+const { width } = Dimensions.get('screen')
 
 export default function ContactScreen({ navigation })
 {
@@ -26,7 +26,7 @@ export default function ContactScreen({ navigation })
       </Block>
 
     </>
-  );
+  )
 }
 
 const styles = StyleSheet.create({
@@ -42,4 +42,4 @@ const styles = StyleSheet.create({
     color: 'black',
   }
 
-});
+})

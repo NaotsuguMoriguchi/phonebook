@@ -3,6 +3,8 @@ import React, { useEffect, useState } from 'react';
 import { View, ActivityIndicator, StyleSheet, Linking, DeviceEventEmitter, PermissionsAndroid, AppState } from 'react-native';
 import { PersistGate } from 'redux-persist/integration/react';
 import { NavigationContainer } from '@react-navigation/native';
+import FlashMessage from "react-native-flash-message"
+
 
 
 import { colors } from './src/styles';
@@ -31,6 +33,7 @@ export default function App()
           <AppView />
         </PersistGate>
       </NavigationContainer>
+      <FlashMessage position="center" />
     </Provider>
   );
 }

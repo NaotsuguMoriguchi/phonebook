@@ -1,6 +1,6 @@
 // @flow
-import { compose } from 'recompose';
+import { compose } from 'recompose'
 
-import PagesView from './PagesView';
+import PagesView from './PagesView'
 
-export default compose()(PagesView);
+export default compose()(PagesView)

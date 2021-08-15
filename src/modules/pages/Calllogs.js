@@ -1,14 +1,18 @@
-import React, { useEffect, useState } from 'react';
-import { StyleSheet, Dimensions, ScrollView, View, ImageBackground, PermissionsAndroid, Platform } from 'react-native';
-import { Button, Block, Text, theme } from 'galio-framework';
-import Icon from 'react-native-vector-icons/Entypo';
-import CallLogs from 'react-native-call-log';
+import React, { useEffect, useState } from 'react'
+import { StyleSheet, Dimensions, ScrollView, View, ImageBackground, PermissionsAndroid, Platform } from 'react-native'
+import { Button, Block, Text, theme } from 'galio-framework'
+import Icon from 'react-native-vector-icons/MaterialIcons'
+import CallLogs from 'react-native-call-log'
 import CallDetectorManager from 'react-native-call-detection'
+import { showMessage } from "react-native-flash-message"
 
-import Header from '../components/Header';
-import materialTheme from '../../constants/Theme';
+import * as MainServices from '../../services/mainService'
 
-const { width, height } = Dimensions.get('screen');
+import Header from '../components/Header'
+import materialTheme from '../../constants/Theme'
+
+
+const { width, height } = Dimensions.get('screen')
 
 const filter = {
   phoneNumbers: '+1234567',
@@ -16,9 +20,11 @@ const filter = {
   maxTimestamp: 1583318721264,
 }
 
+
 export default function CallLogScreen({ navigation })
 {
-  const [callLog, setCallLog] = useState([])
+  const [callLog, setCallLog] = useState({})
+  const [incomingNumber, setIncomingNumber] = useState()
   const [callState, setCallState] = useState(false)
   //callLog
   useEffect(() =>
@@ -38,40 +44,71 @@ export default function CallLogScreen({ navigation })
             buttonPositive: 'OK',
           }
         )
-        console.log(granted)
 
         if (granted === PermissionsAndroid.RESULTS.GRANTED)
         {
 
-          CallLogs.load(20).then(c => { console.log(c, 'LLLOOOGGGG'); setCallLog(c); });
+          CallLogs.loadAll().then(logs =>
+          {
+
+            // console.log(logs)
+            const duplicatedLog = {}
+            logs.map((log) =>
+            {
+              if (duplicatedLog.hasOwnProperty(log.phoneNumber))
+              {
+                duplicatedLog[log.phoneNumber].push(log)
+              } else
+              {
+                duplicatedLog[log.phoneNumber] = []
+                duplicatedLog[log.phoneNumber].push(log)
+              }
+            })
+            // console.log(duplicatedLog, '---------------')
+
+            setCallLog(duplicatedLog)
+          })
 
         } else
         {
-          console.log('Call Log permission denied');
+          console.log('Call Log permission denied')
         }
       }
       catch (e)
       {
-        console.log(e);
+        console.log(e)
       }
     })()
-  }, [callState === false]);
+  }, [callState === false])
+
+  useEffect(() =>
+  {
+    if (callState)
+    {
+      console.log(incomingNumber)
+
+      const area = incomingNumber.slice(0, 2)
+      const city = incomingNumber.slice(2, 6)
+      const number = incomingNumber.slice(6)
+      console.log(area, city, number)
+      MainServices.getIncomingCallInfo({ area, city, number }).then(result =>
+      {
+        console.log(result.data[0], '11111111111')
+        showMessage({
+          message: incomingNumber,
+          description: result.data[0].company ? result.data[0].company : 'No result',
+          type: "info",
+          autoHide: false,
+          style: { width: '90%' }
+        })
+      })
+    }
+  }, [callState === true])
 
   let callDetector = new CallDetectorManager(
     (event, number) =>
     {
-      console.log('event -> ', event + (number ? ' - ' + number : ''));
-      // var updatedCallStates = callStates;
-      // updatedCallStates.push(event + (number ? ' - ' + number : ''));
-      // setFlatListItems(updatedCallStates);
-      // setCallStates(updatedCallStates);
-
-      // For iOS event will be either "Connected",
-      // "Disconnected","Dialing" and "Incoming"
-
-      // For Android event will be either "Offhook",
-      // "Disconnected", "Incoming" or "Missed"
-      // phoneNumber should store caller/called number
+      // console.log('event -> ', event + (number ? ' - ' + number : ''))
 
       if (event === 'Disconnected')
       {
@@ -84,8 +121,11 @@ export default function CallLogScreen({ navigation })
       } else if (event === 'Incoming')
       {
         console.log('Incoming')
+
+        setIncomingNumber(number)
         setCallState(true)
-        // Do something call got incoming
+
+
       } else if (event === 'Dialing')
       {
         // Do something call got dialing
@@ -110,15 +150,59 @@ export default function CallLogScreen({ navigation })
       // If permission got denied [ANDROID]
       // Only If you want to read incoming number
       // Default: console.error
-      console.log('Permission Denied by User');
+      console.log('Permission Denied by User')
     },
     {
       title: 'Phone State Permission',
       message: 'This app needs access to your phone state',
     }
-  );
+  )
 
-  console.log(callDetector)
+  const renderCallLogType = (log) =>
+  {
+    switch (log.type)
+    {
+      case 'UNKNOWN':
+        return (<Icon name="call-missed" family="Galio" color='red' size={20} />)
+      case 'INCOMING':
+        return (<Icon name="call-received" family="Galio" color='green' size={20} />)
+      case 'MISSED':
+        return (<Icon name="call-missed" family="Galio" color='red' size={20} />)
+      case 'OUTGOING':
+        return (<Icon name="call-made" family="Galio" color='grey' size={20} />)
+      default:
+        break
+    }
+  }
+
+  const logList = (logs) =>
+  {
+    // console.log(logs, '00000')
+    var components = []
+    for (const log in logs)
+    {
+      components.push(
+        <View style={styles.row} key={log}>
+          <View style={styles.info}>
+            <ImageBackground
+              source={require('../../../assets/images/user.png')}
+              style={styles.profileContainer}
+              imageStyle={{ borderRadius: 50 }}
+            >
+            </ImageBackground>
+            <Block>
+              <Text style={{ fontSize: 19, marginLeft: theme.SIZES.BASE * 2 }}>{log} {logs[log].length > 1 ? `(${logs[log].length})` : ''}</Text>
+              <Text style={{ fontSize: 12, marginLeft: theme.SIZES.BASE * 2 }}>
+                {renderCallLogType(logs[log][0])}
+                {logs[log][0].dateTime}</Text>
+            </Block>
+          </View>
+          <Icon name="edit" family="Galio" color='black' size={24} onPress={() => navigation.navigate('EditInfo')} />
+        </View>
+      )
+    }
+    return components
+  }
 
   return (
     <>
@@ -127,30 +211,14 @@ export default function CallLogScreen({ navigation })
         <Block flex style={styles.home}>
           <View style={{ flex: 1 }}>
             {
-              callLog.map((log, index) => (
-                <View style={styles.row} key={index}>
-                  <View style={styles.info}>
-                    <ImageBackground
-                      source={require('../../../assets/images/user.png')}
-                      style={styles.profileContainer}
-                      imageStyle={{ borderRadius: 50 }}
-                    >
-                    </ImageBackground>
-                    <Block>
-                      <Text style={{ fontSize: 19, marginLeft: theme.SIZES.BASE * 2 }}>{log.phoneNumber}</Text>
-                      <Text style={{ fontSize: 12, marginLeft: theme.SIZES.BASE * 2 }}>{log.dateTime}</Text>
-                    </Block>
-                  </View>
-                  <Icon name="edit" family="Galio" color='black' size={24} onPress={() => navigation.navigate('EditInfo')} />
-                </View>
-              ))
+              logList(callLog)
             }
           </View>
         </Block>
       </ScrollView>
     </>
 
-  );
+  )
 }
 
 const styles = StyleSheet.create({
@@ -178,4 +246,4 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   }
 
-});
+})

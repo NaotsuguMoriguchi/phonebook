@@ -1,13 +1,13 @@
-import React from 'react';
-import { StyleSheet, Dimensions, ScrollView, View, Button, TextInput, ImageBackground } from 'react-native';
-import { Block, Text, Input, theme } from 'galio-framework';
+import React from 'react'
+import { StyleSheet, Dimensions, ScrollView, View, Button, TextInput, ImageBackground } from 'react-native'
+import { Block, Text, Input, theme } from 'galio-framework'
 
-import Header from '../components/Header';
+import Header from '../components/Header'
 
-import materialTheme from '../../constants/Theme';
-import { useNavigationBuilder } from '@react-navigation/native';
+import materialTheme from '../../constants/Theme'
+import { useNavigationBuilder } from '@react-navigation/native'
 
-const { width, height } = Dimensions.get('screen');
+const { width, height } = Dimensions.get('screen')
 
 export default function EditComment({ navigation })
 {
@@ -32,7 +32,7 @@ export default function EditComment({ navigation })
           <View style={{ flex: 1 }}>
             <View style={styles.row}>
               <View style={{ flexGrow: 1, marginRight: theme.SIZES.BASE }}>
-                <Text>&bull;</Text>
+                <Text>&bull</Text>
               </View>
               <View >
                 <Text style={{ fontSize: 15 }}>一言で言って最低です こちらが電力について分からないのをいいことに無理やり島根銀行と一緒に約一時間も一方的に喋り脅してこられ契約したあとはだんまり。必要な書類や連絡も無しときましたので、解約です 直接島根銀行にクレームを言いましょう。</Text>
@@ -45,7 +45,7 @@ export default function EditComment({ navigation })
       </ScrollView>
     </>
 
-  );
+  )
 }
 
 const styles = StyleSheet.create({
@@ -96,4 +96,4 @@ const styles = StyleSheet.create({
   }
 
 
-});
+})
