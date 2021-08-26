@@ -27,11 +27,10 @@ function get(apiEndpoint, token)
 
 function post(apiEndpoint, payload, token)
 {
-  console.log(payload);
   // token = storageService.getStorage('token');
   return axios.post(baseUrl + apiEndpoint, payload, {
     headers: {
-      // 'authorization': token
+      'recaptcha-token': token
     }
   }).then((response) =>
   {

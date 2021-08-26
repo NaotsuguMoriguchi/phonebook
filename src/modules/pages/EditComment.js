@@ -1,50 +1,102 @@
-import React from 'react'
-import { StyleSheet, Dimensions, ScrollView, View, Button, TextInput, ImageBackground } from 'react-native'
-import { Block, Text, Input, theme } from 'galio-framework'
+import React, { useState } from 'react'
+import { StyleSheet, Dimensions, ScrollView, View} from 'react-native'
+import { Block, Text, theme } from 'galio-framework'
 
 import Header from '../components/Header'
 
 import materialTheme from '../../constants/Theme'
-import { useNavigationBuilder } from '@react-navigation/native'
+import * as MainServices from '../../services/mainService'
 
 const { width, height } = Dimensions.get('screen')
+const iPhoneX = () => Platform.OS === 'ios' && (height === 812 || width === 812 || height === 896 || width === 896);
 
-export default function EditComment({ navigation })
+export default function EditComment({ navigation, route })
 {
+  const [comments, setComments] = useState(route.params.data.com.data)
+
+  const plus = (comment) =>
+  {
+    MainServices.commentPlus({
+      id: comment.id,
+      area: comment.area_code,
+      city: comment.city_code,
+      number: comment.telephone_numbers
+    }).then(result =>
+    {
+      setComments(result.data.data)
+    })
+  }
+
+  const minus = (comment) =>
+  {
+    MainServices.commentMinus({
+      id: comment.id,
+      area: comment.area_code,
+      city: comment.city_code,
+      number: comment.telephone_numbers
+    }).then(result =>
+    {
+      setComments(result.data.data)
+    })
+  }
+
+  const delReq = (comment) =>
+  {
+    MainServices.delReq({
+      id: comment.id,
+      area: comment.area_code,
+      city: comment.city_code,
+      number: comment.telephone_numbers
+    }).then(result =>
+    {
+      setComments(result.data.data)
+    })
+  }
+
 
   return (
     <>
-      <Header title={'コメントログビューア'} move={'EditInfo'} navigation={navigation}></Header>
+      <Header title={'コメントログビューア'} move={'EditInfo'} data={route.params.data} navigation={navigation}></Header>
       <ScrollView showsVerticalScrollIndicator={false}>
         <Block flex style={styles.home}>
-          <View style={{ flex: 1 }}>
-            <View style={styles.row}>
-              <View style={{ flexGrow: 1, marginRight: theme.SIZES.BASE }}>
-                <Text>&bull;</Text>
+          {
+            comments.map((comment, index) =>
+            (
+              <View style={{ marginBottom: theme.SIZES.BASE / 2 }} key={index}>
+                <View style={{ flex: 1, }} >
+                  <View style={styles.row}>
+                    <View style={{ flexGrow: 1, marginRight: theme.SIZES.BASE }}>
+                      <Text>&bull;</Text>
+                    </View>
+                    <View style={{ flexGrow: 10 }} >
+                      <Text style={{ fontSize: 15 }}>{comment['comments']}</Text>
+                      {/* <Text style={{ color: materialTheme.COLORS.INFO }}>0852 - 24 - 1171</Text> */}
+                      <Text> {comment['created_at']}</Text>
+                    </View>
+                  </View>
+                </View>
+                <View style={{ flex: 1 }}>
+                  <View style={styles.row}>
+                    <View style={[styles.row, styles.alignCenter]}>
+                      <Text style={[styles.button, { backgroundColor: materialTheme.COLORS.INFO }]} onPress={() => plus(comment)}>プラス</Text>
+                      <Text> :{comment.plus}</Text>
+                    </View>
+                    <View style={[styles.row, styles.alignCenter]}>
+                      <Text style={[styles.button, { backgroundColor: materialTheme.COLORS.ERROR }]} onPress={() => minus(comment)}>マイナス</Text>
+                      <Text> :{comment.minus}</Text>
+                    </View>
+                    <View style={[styles.row, styles.alignCenter]}>
+                      <Text style={[styles.button, { backgroundColor: materialTheme.COLORS.MUTED }]} onPress={() => delReq(comment)}>削除依頼</Text>
+                      <Text> :{comment.sakujo}</Text>
+                    </View>
+                  </View>
+                </View>
               </View>
-              <View >
-                <Text style={{ fontSize: 15 }}>一言で言って最低です こちらが電力について分からないのをいいことに無理やり島根銀行と一緒に約一時間も一方的に喋り脅してこられ契約したあとはだんまり。必要な書類や連絡も無しときましたので、解約です 直接島根銀行にクレームを言いましょう。</Text>
-                <Text style={{ color: materialTheme.COLORS.INFO }}>0852-24-1171</Text>
-                <Text> 2021-07-29 02:33:19</Text>
-              </View>
-            </View>
-          </View>
-          <View style={{ flex: 1 }}>
-            <View style={styles.row}>
-              <View style={{ flexGrow: 1, marginRight: theme.SIZES.BASE }}>
-                <Text>&bull</Text>
-              </View>
-              <View >
-                <Text style={{ fontSize: 15 }}>一言で言って最低です こちらが電力について分からないのをいいことに無理やり島根銀行と一緒に約一時間も一方的に喋り脅してこられ契約したあとはだんまり。必要な書類や連絡も無しときましたので、解約です 直接島根銀行にクレームを言いましょう。</Text>
-                <Text style={{ color: materialTheme.COLORS.INFO }}>0852-24-1171</Text>
-                <Text> 2021-07-29 02:33:19</Text>
-              </View>
-            </View>
-          </View>
+            ))
+          }
         </Block>
       </ScrollView>
     </>
-
   )
 }
 
@@ -54,46 +106,25 @@ const styles = StyleSheet.create({
     padding: theme.SIZES.BASE
   },
 
+  alignCenter: {
+    alignItems: 'center',
+  },
+
   row: {
     flexDirection: 'row',
-    padding: theme.SIZES.BASE,
+    paddingLeft: theme.SIZES.BASE,
+    paddingRight: theme.SIZES.BASE,
+    paddingTop: theme.SIZES.BASE / 2,
     // flexWrap: 'wrap',
     // justifyContent: 'space-around',
-    // alignItems: 'center',
   },
-
-  label: {
-    fontSize: 13,
-    marginBottom: theme.SIZES.BASE / 2,
-    marginTop: theme.SIZES.BASE
-  },
-
   button: {
-    // width: width / 4,
-    color: 'black',
-    borderRadius: 50,
-    // elevation: 8,
-    backgroundColor: materialTheme.COLORS.DEFAULT,
-    paddingVertical: theme.SIZES.BASE / 1.4,
-    paddingHorizontal: theme.SIZES.BASE * 2
-  },
-
-  button1: {
-    // width: width / 4,
     color: 'white',
-    borderRadius: 50,
-    // elevation: 8,
-    // backgroundColor: materialTheme.COLORS.DEFAULT,
+    borderRadius: iPhoneX ? 18 : 30,
     paddingVertical: theme.SIZES.BASE / 1.4,
-    paddingHorizontal: theme.SIZES.BASE / 1.5
+    paddingHorizontal: theme.SIZES.BASE / 1.5,
+    overflow: iPhoneX ? 'hidden' : null
   },
-
-  input: {
-    borderRadius: 30,
-    borderColor: materialTheme.COLORS.INPUT,
-    backgroundColor: materialTheme.COLORS.DEFAULT,
-    color: 'black',
-  }
 
 
 })

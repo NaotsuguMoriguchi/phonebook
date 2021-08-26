@@ -9,16 +9,14 @@ import { Button, Block, NavBar, Input, Text, theme } from 'galio-framework';
 const { height, width } = Dimensions.get('window');
 const iPhoneX = () => Platform.OS === 'ios' && (height === 812 || width === 812 || height === 896 || width === 896);
 
-const Header = ({ navigation, title, white, transparent, back, move }) =>
+const Header = ({ navigation, title, white, transparent, data, back, move }) =>
 {
   const handleLeftPress = () =>
   {
-    // return (back ? navigation.goBack() : navigation.openDrawer());
-    navigation.navigate(move)
+    console.log(move)
+    navigation.navigate(move,  { data: data })
   }
 
-  // const { back, title, white, transparent, navigation } = this.props;
-  // const { routeName } = navigation.state;
   const noShadow = ["Search", "Categories", "Deals", "Pro", "Profile"].includes(title);
   const headerStyles = [
     !noShadow ? styles.shadow : null,
@@ -41,17 +39,6 @@ const Header = ({ navigation, title, white, transparent, back, move }) =>
         ]}
         onLeftPress={handleLeftPress}
       />
-      {/* {
-        navigation.state.name === 'App' ? (
-          <EvilIcons
-            name="search"
-            size={24}
-            color="black"
-            style={styles.search}
-            onPress={() => navigation.navigate('Contact')}
-          />
-        ) : null
-      } */}
 
     </Block>
   );
@@ -64,12 +51,13 @@ const styles = StyleSheet.create({
     width: '100%',
     fontSize: 18,
     // fontWeight: 'bold',
+    
     textAlign: 'center'
   },
   navbar: {
     paddingVertical: 0,
     paddingBottom: 0,
-    paddingTop: iPhoneX ? theme.SIZES.BASE : theme.SIZES.BASE,
+    paddingTop: iPhoneX ? theme.SIZES.BASE * 2 : theme.SIZES.BASE,
     zIndex: 5,
     position: 'relative'
   },

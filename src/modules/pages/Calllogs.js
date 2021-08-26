@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from 'react'
-import { StyleSheet, Dimensions, ScrollView, View, ImageBackground, PermissionsAndroid, Platform } from 'react-native'
-import { Button, Block, Text, theme } from 'galio-framework'
+import { StyleSheet, Dimensions, ScrollView, View, ImageBackground, PermissionsAndroid, Platform} from 'react-native'
+import { Block, Text, theme } from 'galio-framework'
 import Icon from 'react-native-vector-icons/MaterialIcons'
 import CallLogs from 'react-native-call-log'
 import CallDetectorManager from 'react-native-call-detection'
 import { showMessage } from "react-native-flash-message"
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import * as MainServices from '../../services/mainService'
 
@@ -14,120 +15,178 @@ import materialTheme from '../../constants/Theme'
 
 const { width, height } = Dimensions.get('screen')
 
-const filter = {
-  phoneNumbers: '+1234567',
-  minTimestamp: 1571835032,
-  maxTimestamp: 1583318721264,
-}
 
 
 export default function CallLogScreen({ navigation })
 {
   const [callLog, setCallLog] = useState({})
-  const [incomingNumber, setIncomingNumber] = useState()
+  const [incomingNumber, setIncomingNumber] = useState(null)
+  const [callType, setCallType] = useState()
   const [callState, setCallState] = useState(false)
+  //Duplicated call log
+  const duplicatedCallLog = (logs) => {
+    const duplicatedLog = {}
+      logs.map((log) =>
+      {
+        if (duplicatedLog.hasOwnProperty(log.phoneNumber))
+        {
+          duplicatedLog[log.phoneNumber].push(log)
+        } else
+        {
+          duplicatedLog[log.phoneNumber] = []
+          duplicatedLog[log.phoneNumber].push(log)
+          
+        }
+      })
+
+      setCallLog(duplicatedLog)
+  }
+  //IOS getting calllogs
+  const storeData = async (value) => {
+    try {
+      const jsonValue = JSON.stringify(value)
+      await AsyncStorage.setItem('call_log', jsonValue)
+      console.log(jsonValue)
+    } catch (e) {
+      // saving error
+    }
+  }
+  const getData = async () => {
+    try {
+      const jsonValue = await AsyncStorage.getItem('call_log')
+      return jsonValue != null ? JSON.parse(jsonValue) : [];
+    } catch(e) {
+      // error reading value
+    }
+  }
   //callLog
   useEffect(() =>
   {
-    (async () =>
-    {
-      try
+    if(Platform.OS === 'android'){
+      (async () =>
       {
-        const granted = await PermissionsAndroid.request(
-          PermissionsAndroid.PERMISSIONS.READ_CALL_LOG,
-          {
-            title: 'Call Log Example',
-            message:
-              'Access your call logs',
-            buttonNeutral: 'Ask Me Later',
-            buttonNegative: 'Cancel',
-            buttonPositive: 'OK',
-          }
-        )
-
-        if (granted === PermissionsAndroid.RESULTS.GRANTED)
+        try
         {
-
-          CallLogs.loadAll().then(logs =>
-          {
-
-            // console.log(logs)
-            const duplicatedLog = {}
-            logs.map((log) =>
+          const granted = await PermissionsAndroid.request(
+            PermissionsAndroid.PERMISSIONS.READ_CALL_LOG,
             {
-              if (duplicatedLog.hasOwnProperty(log.phoneNumber))
-              {
-                duplicatedLog[log.phoneNumber].push(log)
-              } else
-              {
-                duplicatedLog[log.phoneNumber] = []
-                duplicatedLog[log.phoneNumber].push(log)
-              }
+              title: 'Call Log Example',
+              message:
+                'Access your call logs',
+              buttonNeutral: 'Ask Me Later',
+              buttonNegative: 'Cancel',
+              buttonPositive: 'OK',
+            }
+          )
+  
+          if (granted === PermissionsAndroid.RESULTS.GRANTED)
+          {
+  
+            CallLogs.loadAll().then(logs =>
+            {
+              duplicatedCallLog(logs)
             })
-            // console.log(duplicatedLog, '---------------')
-
-            setCallLog(duplicatedLog)
-          })
-
-        } else
-        {
-          console.log('Call Log permission denied')
+  
+          } else
+          {
+            console.log('Call Log permission denied')
+          }
         }
-      }
-      catch (e)
-      {
-        console.log(e)
-      }
-    })()
+        catch (e)
+        {
+          console.log(e)
+        }
+      })()
+    }
+    if(Platform.OS === 'ios'){
+      (async () => {
+        try {
+          const callLogs = await getData()
+          // const datetime = new Date().toISOString().replace(/T/, ' ').replace(/\..+/, '')
+          // callLogs.push({phoneNumber: ' 08009198670', type: 'UNKNOWN', datetime})
+          // await storeData(callLogs)
+          duplicatedCallLog(callLogs)
+        } catch (error) {
+          console.log(error)
+        }
+        
+      })()
+    }
   }, [callState === false])
 
   useEffect(() =>
   {
     if (callState)
     {
-      console.log(incomingNumber)
-
-      const area = incomingNumber.slice(0, 2)
-      const city = incomingNumber.slice(2, 6)
-      const number = incomingNumber.slice(6)
-      console.log(area, city, number)
-      MainServices.getIncomingCallInfo({ area, city, number }).then(result =>
+      MainServices.search({ s: incomingNumber }).then(result =>
       {
-        console.log(result.data[0], '11111111111')
-        showMessage({
-          message: incomingNumber,
-          description: result.data[0].company ? result.data[0].company : 'No result',
-          type: "info",
-          autoHide: false,
-          style: { width: '90%' }
-        })
+        console.log(result.data)
+        if (result.data.area)
+        {
+          const area = result.data.area.area_code
+          const city = result.data.area.city_code
+          const number = result.data.shimoketa
+          MainServices.getIncomingCallInfo({ area, city, number }).then(result =>
+          {
+            showMessage({
+              message: incomingNumber,
+              description: result.data[0].company,
+              type: "info",
+              autoHide: false,
+              style: { width: '90%' }
+            })
+          })
+        } else
+        {
+          showMessage({
+            message: incomingNumber,
+            description: 'No result',
+            type: "info",
+            autoHide: false,
+            style: { width: '90%' }
+          })
+        }
+
       })
+
+
     }
   }, [callState === true])
+
+  //ios call log save
+  const iosCallLogSave = async () => {
+    const callLogs = await getData()
+    const datetime = new Date().toISOString().replace(/T/, ' ').replace(/\..+/, '')
+    callLogs.push({phoneNumber: incomingNumber, type: callType, datetime})
+    await storeData(callLogs)
+  }
 
   let callDetector = new CallDetectorManager(
     (event, number) =>
     {
-      // console.log('event -> ', event + (number ? ' - ' + number : ''))
 
       if (event === 'Disconnected')
       {
+        setCallType('MISSED')
         // Do something call got disconnected
         setCallState(false)
+        iosCallLogSave()
       } else if (event === 'Connected')
       {
+        setCallType('INCOMING')
+        iosCallLogSave()
         // Do something call got connected
         // This clause will only be executed for iOS
       } else if (event === 'Incoming')
       {
-        console.log('Incoming')
-
         setIncomingNumber(number)
         setCallState(true)
-
-
+        setCallType('INCOMING')
+        iosCallLogSave()
       } else if (event === 'Dialing')
       {
+        setCallType('OUTGOING')
+        iosCallLogSave()
         // Do something call got dialing
         // This clause will only be executed for iOS
       } else if (event === 'Offhook')
@@ -160,6 +219,7 @@ export default function CallLogScreen({ navigation })
 
   const renderCallLogType = (log) =>
   {
+    console.log(log, '===============')
     switch (log.type)
     {
       case 'UNKNOWN':
@@ -174,10 +234,38 @@ export default function CallLogScreen({ navigation })
         break
     }
   }
+  const search = (key) =>
+  {
+    MainServices.search({ s: key }).then(result =>
+    {
+      if (result.data.area)
+      {
+        const area = result.data.area.area_code
+        const city = result.data.area.city_code
+        const number = result.data.shimoketa
+        MainServices.getTelephoneInfo({ area, city, number }).then(res =>
+        {
+          console.log(res.data)
+          navigation.navigate('EditInfo', { data: res.data })
+        })
+      } else
+      {
+        console.log('No result')
+        showMessage({
+          message: 'Can not access!',
+          description: 'There is no data',
+          type: "warning",
+          autoHide: true,
+          style: { width: '70%' }
+        })
+      }
+
+    })
+  }
 
   const logList = (logs) =>
   {
-    // console.log(logs, '00000')
+    console.log(logs, '++++++++++')
     var components = []
     for (const log in logs)
     {
@@ -185,7 +273,7 @@ export default function CallLogScreen({ navigation })
         <View style={styles.row} key={log}>
           <View style={styles.info}>
             <ImageBackground
-              source={require('../../../assets/images/user.png')}
+              source={require('../../assets/images/user.png')}
               style={styles.profileContainer}
               imageStyle={{ borderRadius: 50 }}
             >
@@ -197,7 +285,7 @@ export default function CallLogScreen({ navigation })
                 {logs[log][0].dateTime}</Text>
             </Block>
           </View>
-          <Icon name="edit" family="Galio" color='black' size={24} onPress={() => navigation.navigate('EditInfo')} />
+          <Icon name="edit" family="Galio" color='black' size={24} onPress={() => search(log)} />
         </View>
       )
     }
@@ -206,7 +294,7 @@ export default function CallLogScreen({ navigation })
 
   return (
     <>
-      <Header title={'プロフィール編集'} move={'App'} navigation={navigation}></Header>
+      <Header title={'プロフィール編集'} move={'Onboarding'} navigation={navigation}></Header>
       <ScrollView showsVerticalScrollIndicator={false}>
         <Block flex style={styles.home}>
           <View style={{ flex: 1 }}>
