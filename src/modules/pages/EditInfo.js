@@ -1,6 +1,8 @@
-import React, { useState } from 'react'
+import React, { useState, useRef } from 'react'
 import { StyleSheet, Dimensions, ScrollView, View, TextInput, Platform } from 'react-native'
 import { Block, Text, Input, theme } from 'galio-framework'
+import ReCaptchaV3 from '@haskkor/react-native-recaptchav3'
+
 
 import Header from '../components/Header'
 import materialTheme from '../../constants/Theme'
@@ -17,6 +19,9 @@ export default function EditInfo({ navigation, route })
   const area = data.meiwaku.area_code
   const city = data.meiwaku.city_code
   const number = data.meiwaku.telephone_numbers
+  const [recaptcha, setRecaptcha] = React.useState('');
+  // const captchaRef = useRef(null);
+  var captchaRef = React.createRef();
 
   const plus = () =>
   {
@@ -40,15 +45,17 @@ export default function EditInfo({ navigation, route })
 
   const saveInfo = () =>
   {
-    const token = '03AGdBq25YlJbRQXNse60GjUvZjejyXi-WAkiEkRB_3rwfi_QB-Z5rBgmGGoZ28U4LUpHzUFpjttkxf88QR45Duh-rAaSrSltuhQGKOYKtqbyY997i0JM9adQeu-LhXkR0MvdpgdwnTQdW_KBTKKz0Tep_0ERJgVzgM5qvtXFS6VG-4MyV4d50azoRVepeLTu8Ex0F1qcTZsTxTPmWyMn3RWDuxfmNURAWCsvcU6nfC2dzAMi9cYXzvwD7eYAzSRIRU-_G6SjPAKaDvFL6ligfWugAqS2qAkOgB82xFSFUxCZO2gYqGKC8v8LkdloiQFiyhOhQ5xMLpjWV0bzf2jzpzDJiQqeCu9gyBHSoiSksEUSGo-ZuMUWrnWWLO5wglF9Jz-aveBFn6JQvDQJOI1c5DC8C9toEuJ1K0cmJG53-lJEwoJugz1HlSnVs6gNGUyZqH020V4c5_RPU'
     const temp = { ...data }
-    temp.place['recaptcha-token'] = token
+    temp.place['recaptcha-token'] = recaptcha
     setData(temp)
-    MainServices.SaveInfo(data.place, token).then(result =>
+    console.log(recaptcha)
+    MainServices.SaveInfo(data.place, recaptcha, 'form').then(result =>
     {
       console.log(result.data, '-------------')
+      // captchaRef.current.refreshToken()
     })
   }
+
 
   const inputChange = (text, name) =>
   {
@@ -58,14 +65,14 @@ export default function EditInfo({ navigation, route })
       case 'company':
         temp.place.company = text
         break;
-      case 'ghoshu':
-        temp.place.ghoshu = text
+      case 'gyoshu':
+        temp.place.gyoshu = text
         break;
       case 'jusho':
         temp.place.jusho = text
         break;
-      case 'moyorieki':
-        temp.place.moyorieki = text
+      case 'moyori':
+        temp.place.moyori = text
         break;
       case 'access':
         temp.place.access = text
@@ -73,8 +80,8 @@ export default function EditInfo({ navigation, route })
       case 'site':
         temp.place.site = text
         break;
-      case 'jigyo_naoyo':
-        temp.place.jigyo_naoyo = text
+      case 'jighonaiyou':
+        temp.place.jighonaiyou = text
         break;
 
       default:
@@ -141,20 +148,20 @@ export default function EditInfo({ navigation, route })
           {data.place ? (
             <>
               <Input
-              color={'black'}
-              placeholder='事業者名(必須)'
-              placeholderTextColor={materialTheme.COLORS.MUTED}
-              style={styles.input}
-              value={data.place.company}
-              onChangeText={(text) => inputChange(text, 'company')}
+                color={'black'}
+                placeholder='事業者名(必須)'
+                placeholderTextColor={materialTheme.COLORS.MUTED}
+                style={styles.input}
+                value={data.place.company}
+                onChangeText={(text) => inputChange(text, 'company')}
               ></Input>
               <Input
                 color={'black'}
                 placeholder='業種'
                 placeholderTextColor={materialTheme.COLORS.MUTED}
                 style={styles.input}
-                value={data.place.ghoshu}
-                onChangeText={(text) => inputChange(text, 'ghoshu')}
+                value={data.place.gyoshu}
+                onChangeText={(text) => inputChange(text, 'gyoshu')}
               ></Input>
               <Input
                 color={'black'}
@@ -169,8 +176,8 @@ export default function EditInfo({ navigation, route })
                 placeholder='最寄駅'
                 placeholderTextColor={materialTheme.COLORS.MUTED}
                 style={styles.input}
-                value={data.place.moyorieki}
-                onChangeText={(text) => inputChange(text, 'moyorieki')}
+                value={data.place.moyori}
+                onChangeText={(text) => inputChange(text, 'moyori')}
               ></Input>
               <Input
                 color={'black'}
@@ -190,24 +197,29 @@ export default function EditInfo({ navigation, route })
               ></Input>
               <TextInput
                 numberOfLines={Platform.OS === 'ios' ? null : 4}
-                minHeight={Platform.OS === 'ios'  ? (theme.SIZES.BASE * 7) : null}
+                minHeight={Platform.OS === 'ios' ? (theme.SIZES.BASE * 7) : null}
                 multiline={true}
                 color={'black'}
                 placeholder='事業内容'
                 placeholderTextColor={materialTheme.COLORS.MUTED}
-                style={[styles.input, { padding: Platform.OS === 'ios' ? theme.SIZES.BASE  : theme.SIZES.BASE, paddingTop:  iPhoneX ? theme.SIZES.BASE : null, }]}
-                value={data.place.jigyo_naoyo}
-                onChangeText={(text) => inputChange(text, 'jigyo_naoyo')}
+                style={[styles.input, { padding: Platform.OS === 'ios' ? theme.SIZES.BASE : theme.SIZES.BASE, paddingTop: iPhoneX ? theme.SIZES.BASE : null, }]}
+                value={data.place.jighonaiyou}
+                onChangeText={(text) => inputChange(text, 'jighonaiyou')}
               ></TextInput>
             </>
           ) : null}
-          
+
           <Text
             style={{ fontSize: 17, color: materialTheme.COLORS.ERROR, marginTop: theme.SIZES.BASE }}
             onPress={() => navigation.navigate('EditComment', { data: data })}
           >コメントログビューア</Text>
           <Text style={[styles.saveButton]} onPress={() => saveInfo()}>保存</Text>
         </Block>
+        <ReCaptchaV3
+          ref={captchaRef}
+          captchaDomain={'https://meiwaku-denwa.club'}
+          siteKey={'6LcbqRIaAAAAAJuFSZJB3iweFSoWTX3JUkgqU8V5'}
+          onReceiveToken={(token) => setRecaptcha(token)} />
       </ScrollView>
     </>
   )

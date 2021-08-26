@@ -37,9 +37,10 @@ export const delReq = ({ id, area, city, number }) =>
   return httpService.get(`sakujo/${id}/${area}/${city}/${number}`)
 }
 
-export const SaveInfo = (formData, token) =>
+export const SaveInfo = (formData, token, form) =>
 {
-  return httpService.post('add/jigho', formData, token)
+  // console.log(formData)
+  return httpService.post('add/jigho', formData, token, form)
 }
 
 export const search = ({ s }) =>

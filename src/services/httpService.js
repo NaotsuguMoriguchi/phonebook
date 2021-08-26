@@ -25,13 +25,20 @@ function get(apiEndpoint, token)
   })
 }
 
-function post(apiEndpoint, payload, token)
+function post(apiEndpoint, payload, token, form)
 {
   // token = storageService.getStorage('token');
-  return axios.post(baseUrl + apiEndpoint, payload, {
-    headers: {
-      'recaptcha-token': token
+  var formheader = {
+  }
+  if (form === 'form')
+  {
+    formheader = {
+      'recaptcha-token': token,
+      // "Content-Type": "multipart/form-data"
     }
+  }
+  return axios.post(baseUrl + apiEndpoint, payload, {
+    headers: formheader
   }).then((response) =>
   {
     return response;

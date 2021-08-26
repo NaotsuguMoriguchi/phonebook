@@ -7,6 +7,7 @@
     "start": "react-native start"
   },
   "dependencies": {
+    "@haskkor/react-native-recaptchav3": "^1.2.1",
     "@react-native-async-storage/async-storage": "^1.15.7",
     "@react-navigation/bottom-tabs": "^6.0.5",
     "@react-navigation/drawer": "^6.1.4",
@@ -33,6 +34,7 @@
     "react-native-ui-lib": "^5.29.0",
     "react-native-unimodules": "~0.14.5",
     "react-native-web": "~0.13.12",
+    "react-native-webview": "^11.13.0",
     "react-redux": "^7.2.4",
     "recompose": "^0.30.0",
     "redux-logger": "^3.0.6",

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { StyleSheet, Dimensions, ScrollView, View, ImageBackground, PermissionsAndroid, Platform} from 'react-native'
+import { StyleSheet, Dimensions, ScrollView, View, ImageBackground, PermissionsAndroid, Platform } from 'react-native'
 import { Block, Text, theme } from 'galio-framework'
 import Icon from 'react-native-vector-icons/MaterialIcons'
 import CallLogs from 'react-native-call-log'
@@ -24,45 +24,53 @@ export default function CallLogScreen({ navigation })
   const [callType, setCallType] = useState()
   const [callState, setCallState] = useState(false)
   //Duplicated call log
-  const duplicatedCallLog = (logs) => {
+  const duplicatedCallLog = (logs) =>
+  {
     const duplicatedLog = {}
-      logs.map((log) =>
+    logs.map((log) =>
+    {
+      if (duplicatedLog.hasOwnProperty(log.phoneNumber))
       {
-        if (duplicatedLog.hasOwnProperty(log.phoneNumber))
-        {
-          duplicatedLog[log.phoneNumber].push(log)
-        } else
-        {
-          duplicatedLog[log.phoneNumber] = []
-          duplicatedLog[log.phoneNumber].push(log)
-          
-        }
-      })
+        duplicatedLog[log.phoneNumber].push(log)
+      } else
+      {
+        duplicatedLog[log.phoneNumber] = []
+        duplicatedLog[log.phoneNumber].push(log)
 
-      setCallLog(duplicatedLog)
+      }
+    })
+
+    setCallLog(duplicatedLog)
   }
   //IOS getting calllogs
-  const storeData = async (value) => {
-    try {
+  const storeData = async (value) =>
+  {
+    try
+    {
       const jsonValue = JSON.stringify(value)
       await AsyncStorage.setItem('call_log', jsonValue)
       console.log(jsonValue)
-    } catch (e) {
+    } catch (e)
+    {
       // saving error
     }
   }
-  const getData = async () => {
-    try {
+  const getData = async () =>
+  {
+    try
+    {
       const jsonValue = await AsyncStorage.getItem('call_log')
       return jsonValue != null ? JSON.parse(jsonValue) : [];
-    } catch(e) {
+    } catch (e)
+    {
       // error reading value
     }
   }
   //callLog
   useEffect(() =>
   {
-    if(Platform.OS === 'android'){
+    if (Platform.OS === 'android')
+    {
       (async () =>
       {
         try
@@ -78,15 +86,15 @@ export default function CallLogScreen({ navigation })
               buttonPositive: 'OK',
             }
           )
-  
+
           if (granted === PermissionsAndroid.RESULTS.GRANTED)
           {
-  
+
             CallLogs.loadAll().then(logs =>
             {
               duplicatedCallLog(logs)
             })
-  
+
           } else
           {
             console.log('Call Log permission denied')
@@ -98,18 +106,22 @@ export default function CallLogScreen({ navigation })
         }
       })()
     }
-    if(Platform.OS === 'ios'){
-      (async () => {
-        try {
+    if (Platform.OS === 'ios')
+    {
+      (async () =>
+      {
+        try
+        {
           const callLogs = await getData()
           // const datetime = new Date().toISOString().replace(/T/, ' ').replace(/\..+/, '')
           // callLogs.push({phoneNumber: ' 08009198670', type: 'UNKNOWN', datetime})
           // await storeData(callLogs)
           duplicatedCallLog(callLogs)
-        } catch (error) {
+        } catch (error)
+        {
           console.log(error)
         }
-        
+
       })()
     }
   }, [callState === false])
@@ -154,10 +166,11 @@ export default function CallLogScreen({ navigation })
   }, [callState === true])
 
   //ios call log save
-  const iosCallLogSave = async () => {
+  const iosCallLogSave = async () =>
+  {
     const callLogs = await getData()
     const datetime = new Date().toISOString().replace(/T/, ' ').replace(/\..+/, '')
-    callLogs.push({phoneNumber: incomingNumber, type: callType, datetime})
+    callLogs.push({ phoneNumber: incomingNumber, type: callType, datetime })
     await storeData(callLogs)
   }
 
@@ -219,7 +232,6 @@ export default function CallLogScreen({ navigation })
 
   const renderCallLogType = (log) =>
   {
-    console.log(log, '===============')
     switch (log.type)
     {
       case 'UNKNOWN':
@@ -238,6 +250,7 @@ export default function CallLogScreen({ navigation })
   {
     MainServices.search({ s: key }).then(result =>
     {
+      console.log(result.data)
       if (result.data.area)
       {
         const area = result.data.area.area_code
@@ -265,7 +278,6 @@ export default function CallLogScreen({ navigation })
 
   const logList = (logs) =>
   {
-    console.log(logs, '++++++++++')
     var components = []
     for (const log in logs)
     {
