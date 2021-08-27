@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react'
+import React, { useState, useEffect } from 'react'
 import { StyleSheet, Dimensions, ScrollView, View, TextInput, Platform } from 'react-native'
 import { Block, Text, Input, theme } from 'galio-framework'
 import ReCaptchaV3 from '@haskkor/react-native-recaptchav3'
@@ -14,14 +14,34 @@ const iPhoneX = () => Platform.OS === 'ios' && (height === 812 || width === 812 
 
 export default function EditInfo({ navigation, route })
 {
+  console.log(route.params.data)
 
   const [data, setData] = useState(route.params.data)
   const area = data.meiwaku.area_code
   const city = data.meiwaku.city_code
   const number = data.meiwaku.telephone_numbers
-  const [recaptcha, setRecaptcha] = React.useState('');
+  const [recaptcha, setRecaptcha] = React.useState('')
+  const [savedata, setSavedata] = useState()
   // const captchaRef = useRef(null);
   var captchaRef = React.createRef();
+ 
+  useEffect(() => {
+    if(route.params.data.place){
+      var temp1 = {}
+      temp1.company = route.params.data.place.company
+      temp1.gyoshu = route.params.data.place.ghoshu
+      temp1.jusho = route.params.data.place.jusho
+      temp1.moyori = route.params.data.place.moyorieki
+      temp1.access = route.params.data.place.access
+      temp1.site = route.params.data.place.site
+      temp1.jighonaiyou = route.params.data.place.jigyo_naoyo
+      temp1.area_code = route.params.data.place.area_code
+      temp1.city_code = route.params.data.place.city_code
+      temp1.num = route.params.data.place.num
+      temp1['recaptcha-token'] = recaptcha
+      setSavedata(temp1)
+    }
+  }, [recaptcha])
 
   const plus = () =>
   {
@@ -45,13 +65,10 @@ export default function EditInfo({ navigation, route })
 
   const saveInfo = () =>
   {
-    const temp = { ...data }
-    temp.place['recaptcha-token'] = recaptcha
-    setData(temp)
-    console.log(recaptcha)
-    MainServices.SaveInfo(data.place, recaptcha, 'form').then(result =>
+    console.log(savedata)
+    MainServices.SaveInfo(savedata, recaptcha, 'form').then(result =>
     {
-      console.log(result.data, '-------------')
+      // console.log(result.data, '-------------')
       // captchaRef.current.refreshToken()
     })
   }
@@ -60,34 +77,43 @@ export default function EditInfo({ navigation, route })
   const inputChange = (text, name) =>
   {
     var temp = { ...data }
+    var temp1 = {...savedata}
     switch (name)
     {
       case 'company':
         temp.place.company = text
+        temp1.company = text
         break;
-      case 'gyoshu':
-        temp.place.gyoshu = text
+      case 'ghoshu':
+        temp.place.ghoshu = text
+        temp1.gyoshu = text
         break;
       case 'jusho':
         temp.place.jusho = text
+        temp1.jusho = text
         break;
-      case 'moyori':
-        temp.place.moyori = text
-        break;
-      case 'access':
-        temp.place.access = text
-        break;
-      case 'site':
-        temp.place.site = text
-        break;
-      case 'jighonaiyou':
-        temp.place.jighonaiyou = text
+        case 'moyorieki':
+          temp.place.moyorieki = text
+          temp1.moyori = text
+          break;
+        case 'access':
+          temp.place.access = text
+          temp1.access = text
+          break;
+        case 'site':
+          temp.place.site = text
+          temp1.site = text
+          break;
+        case 'jigyo_naoyo':
+          temp.place.jigyo_naoyo = text
+          temp1.jighonaiyou = text
         break;
 
       default:
         break;
     }
     setData(temp)
+    setSavedata(temp1)
   }
 
   return (
@@ -160,8 +186,8 @@ export default function EditInfo({ navigation, route })
                 placeholder='業種'
                 placeholderTextColor={materialTheme.COLORS.MUTED}
                 style={styles.input}
-                value={data.place.gyoshu}
-                onChangeText={(text) => inputChange(text, 'gyoshu')}
+                value={data.place.ghoshu}
+                onChangeText={(text) => inputChange(text, 'ghoshu')}
               ></Input>
               <Input
                 color={'black'}
@@ -176,8 +202,8 @@ export default function EditInfo({ navigation, route })
                 placeholder='最寄駅'
                 placeholderTextColor={materialTheme.COLORS.MUTED}
                 style={styles.input}
-                value={data.place.moyori}
-                onChangeText={(text) => inputChange(text, 'moyori')}
+                value={data.place.moyorieki}
+                onChangeText={(text) => inputChange(text, 'moyorieki')}
               ></Input>
               <Input
                 color={'black'}
@@ -203,8 +229,8 @@ export default function EditInfo({ navigation, route })
                 placeholder='事業内容'
                 placeholderTextColor={materialTheme.COLORS.MUTED}
                 style={[styles.input, { padding: Platform.OS === 'ios' ? theme.SIZES.BASE : theme.SIZES.BASE, paddingTop: iPhoneX ? theme.SIZES.BASE : null, }]}
-                value={data.place.jighonaiyou}
-                onChangeText={(text) => inputChange(text, 'jighonaiyou')}
+                value={data.place.jigyo_naoyo}
+                onChangeText={(text) => inputChange(text, 'jigyo_naoyo')}
               ></TextInput>
             </>
           ) : null}

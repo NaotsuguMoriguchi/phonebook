@@ -39,11 +39,16 @@ export const delReq = ({ id, area, city, number }) =>
 
 export const SaveInfo = (formData, token, form) =>
 {
-  // console.log(formData)
+  console.log(formData)
   return httpService.post('add/jigho', formData, token, form)
 }
 
 export const search = ({ s }) =>
 {
   return httpService.post('search', { s })
+}
+
+export const addComment = (formdata, token, form) => {
+  return httpService.post(`add/area/${formdata.area_code}/city/${formdata.city_code}/num/${formdata.num}`, formdata, token, form)
+
 }
